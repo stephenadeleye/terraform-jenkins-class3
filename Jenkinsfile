@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Select Terraform action to perform')
+        choiceintre choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Select Terraform action to perform')
         string(name: 'TF_STATE_BUCKET', defaultValue: '', description: 'S3 bucket name for Terraform state (optional, auto-filled for destroy if available)')
         string(name: 'TF_LOCK_TABLE', defaultValue: '', description: 'DynamoDB table name for state locking (optional, auto-filled for destroy if available)')
     }
@@ -14,6 +14,16 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+                script {
+                    if (params.ACTION == 'destroy') {
+                        // Unarchive the output file if it exists
+                        try {
+                            unarchive mapping: ["${env.STATE_OUTPUT_FILE}": "${env.STATE_OUTPUT_FILE}"]
+                        } catch (Exception e) {
+                            echo "No archived terraform_state_outputs.txt found, relying on parameters or manual input"
+                        }
+                    }
+                }
             }
         }
         stage('Provision State Management Resources') {
