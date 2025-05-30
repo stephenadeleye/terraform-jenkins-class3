@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        choiceintre choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Select Terraform action to perform')
+        choice(name: 'ACTION', choices: ['apply', 'destroy'], description: 'Select Terraform action to perform')
         string(name: 'TF_STATE_BUCKET', defaultValue: '', description: 'S3 bucket name for Terraform state (optional, auto-filled for destroy if available)')
         string(name: 'TF_LOCK_TABLE', defaultValue: '', description: 'DynamoDB table name for state locking (optional, auto-filled for destroy if available)')
     }
