@@ -1,6 +1,6 @@
 # Configuring AWS provider
 provider "aws" {
-  region = "us-east-1"
+  region = "eu-west-2"
 }
 
 # Data source to fetch the latest Amazon Linux 2 AMI
@@ -11,38 +11,6 @@ data "aws_ami" "amazon_linux" {
   filter {
     name   = "name"
     values = ["amzn2-ami-hvm-*-x86_64-gp2"]
-  }
-}
-
-# S3 bucket for Terraform state
-resource "aws_s3_bucket" "terraform_state" {
-  bucket = "my-terraform-state-bucket-${random_string.bucket_suffix.result}"
-
-  tags = {
-    Name = "TerraformStateBucket"
-  }
-}
-
-# Random string for unique bucket name
-resource "random_string" "bucket_suffix" {
-  length  = 8
-  special = false
-  upper   = false
-}
-
-# DynamoDB table for state locking
-resource "aws_dynamodb_table" "terraform_locks" {
-  name         = "terraform-state-locks"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
-
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-
-  tags = {
-    Name = "TerraformLockTable"
   }
 }
 
@@ -62,7 +30,7 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
-  availability_zone       = "us-east-1a"
+  availability_zone       = "eu-west-2a"
 
   tags = {
     Name = "public-subnet"
@@ -136,9 +104,8 @@ resource "aws_instance" "app_server" {
 # Terraform backend configuration
 terraform {
   backend "s3" {
-    bucket         = "my-terraform-state-bucket-<random_suffix>" # Replaced dynamically in Jenkins
-    key            = "terraform/state/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "terraform-state-locks"
+    # Bucket and DynamoDB table names will be provided via backend-config
+    key    = "terraform/state/terraform.tfstate"
+    region = "eu-west-2"
   }
 }
