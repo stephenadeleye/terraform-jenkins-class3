@@ -1,6 +1,10 @@
+# Configuring AWS provider
 provider "aws" {
-  region = "eu-west-2" 
+  region = "eu-west-2"
 }
+
+# Retrieve AWS account ID for backend configuration
+data "aws_caller_identity" "current" {}
 
 # Data source to fetch the latest Amazon Linux 2 AMI
 data "aws_ami" "amazon_linux" {
@@ -76,12 +80,6 @@ resource "aws_security_group" "ec2_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
   egress {
     from_port   = 0
     to_port     = 0
@@ -109,7 +107,9 @@ resource "aws_instance" "app_server" {
 # Terraform backend configuration
 terraform {
   backend "s3" {
-    key    = "terraform/state/terraform.tfstate"
-    region = "eu-west-2"
+    bucket         = "my-terraform-state-bucket-${data.aws_caller_identity.current.account_id}"
+    key            = "terraform/state/terraform.tfstate"
+    region         = "eu-west-2"
+    dynamodb_table = "terraform-state-locks-${data.aws_caller_identity.current.account_id}"
   }
 }
