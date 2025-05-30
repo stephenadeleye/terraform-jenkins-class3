@@ -3,9 +3,6 @@ provider "aws" {
   region = "eu-west-2"
 }
 
-# Retrieve AWS account ID for backend configuration
-data "aws_caller_identity" "current" {}
-
 # Data source to fetch the latest Amazon Linux 2 AMI
 data "aws_ami" "amazon_linux" {
   most_recent = true
@@ -107,9 +104,9 @@ resource "aws_instance" "app_server" {
 # Terraform backend configuration
 terraform {
   backend "s3" {
-    bucket         = "my-terraform-state-bucket-${data.aws_caller_identity.current.account_id}"
+    bucket         = "my-terraform-state-bucket-205930632952" # Replace with your account ID
     key            = "terraform/state/terraform.tfstate"
     region         = "eu-west-2"
-    dynamodb_table = "terraform-state-locks-${data.aws_caller_identity.current.account_id}"
+    dynamodb_table = "terraform-state-locks-205930632952" # Replace with your account ID
   }
 }
