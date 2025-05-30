@@ -1,6 +1,6 @@
 # Configuring AWS provider for state management
 provider "aws" {
-  region = "us-east-1"
+  region = "eu-west-2"
 }
 
 # Random string for unique bucket name
