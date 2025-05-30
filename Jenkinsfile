@@ -22,7 +22,7 @@ pipeline {
             }
             steps {
                 dir('state_management') {
-                    withAWS(credentials: 'acess-key') {
+                    withAWS(credentials: 'access-key') {
                         sh 'terraform init'
                         sh 'terraform apply -auto-approve'
                         // Capture outputs for bucket and table names
@@ -41,7 +41,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 dir('main') {
-                    withAWS(credentials: 'acess-key') {
+                    withAWS(credentials: 'access-key') {
                         script {
                             def bucket = params.TF_STATE_BUCKET
                             def table = params.TF_LOCK_TABLE
@@ -70,7 +70,7 @@ pipeline {
             }
             steps {
                 dir('main') {
-                    withAWS(credentials: 'acess-key') {
+                    withAWS(credentials: 'access-key') {
                         sh 'terraform plan -out=tfplan'
                     }
                 }
@@ -82,7 +82,7 @@ pipeline {
             }
             steps {
                 dir('main') {
-                    withAWS(credentials: 'acess-key') {
+                    withAWS(credentials: 'access-key') {
                         sh 'terraform apply -auto-approve tfplan'
                     }
                 }
@@ -94,12 +94,12 @@ pipeline {
             }
             steps {
                 dir('main') {
-                    withAWS(credentials: 'acess-key') {
+                    withAWS(credentials: 'access-key') {
                         sh 'terraform destroy -auto-approve'
                     }
                 }
                 dir('state_management') {
-                    withAWS(credentials: 'acess-key') {
+                    withAWS(credentials: 'access-key') {
                         sh 'terraform init'
                         sh 'terraform destroy -auto-approve'
                     }
