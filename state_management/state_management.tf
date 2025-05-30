@@ -1,6 +1,6 @@
 # Configuring AWS provider for state management
 provider "aws" {
-  region = "eu-west-2"
+  region = "eu-west-2" 
 }
 
 # Random string for unique bucket name
@@ -12,7 +12,8 @@ resource "random_string" "bucket_suffix" {
 
 # S3 bucket for Terraform state
 resource "aws_s3_bucket" "terraform_state" {
-  bucket = "my-terraform-state-bucket-${random_string.bucket_suffix.result}"
+  bucket        = "my-terraform-state-bucket-${random_string.bucket_suffix.result}"
+  force_destroy = true # Allow deletion of non-empty bucket
 
   tags = {
     Name = "TerraformStateBucket"
