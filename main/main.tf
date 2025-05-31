@@ -104,9 +104,9 @@ resource "aws_instance" "app_server" {
 # Terraform backend configuration
 terraform {
   backend "s3" {
-    bucket         = "my-terraform-state-bucket-205930632952" # Replace with your account ID
+    bucket         = "my-terraform-state-bucket-959776002475" # Replace with your account ID
     key            = "terraform/state/terraform.tfstate"
     region         = "eu-west-2"
-    dynamodb_table = "terraform-state-locks-205930632952" # Replace with your account ID
+    dynamodb_table = "terraform-state-locks-959776002475" # Replace with your account ID
   }
 }
